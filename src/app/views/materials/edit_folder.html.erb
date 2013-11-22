@@ -1,0 +1,8 @@
+<%- model_class = MaterialFolder -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => t('helpers.titles.new', :model => model_class.model_name.human,
+                                 :default => "Edit #{model_class.model_name.human}s") %></h1>
+</div>
+<br/>
+
+<%= render partial: "subfolder_form", locals: { :modal => false, :folder_to_change => @folder, :subfolder_method => :put, :parent => nil } %>

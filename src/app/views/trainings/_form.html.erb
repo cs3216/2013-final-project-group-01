@@ -1,0 +1,94 @@
+<%= form_for [@course, @training], :html => { :class => 'form-horizontal' } do |f| %>
+    <div class="control-group">
+      <%= f.label :title, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :title, :class => 'text_field span7' %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :description, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_area :description, :class => 'text_area span7 html-editor', :rows => 10 %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :exp, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :exp, :class => 'number_field input-medium', id:'training-exp'%>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :open_at, :class => 'control-label' %>
+      <div class="controls">
+        <div class="datetimepicker future-only input-append date">
+          <%= f.text_field :open_at,
+                           :value => datetime_format(@training.open_at),
+                           :class => 'input-medium',
+                           id: "open_at"%>
+          <span class="add-on">
+          <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+        </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label>Type</label>
+      <div class="controls">
+        <select name="training[t_type]" class="input-medium" >
+          <% AssignmentType.all.each do  |assign_type| %>
+              <option value="<%= assign_type.id %>" <%= 'selected="selected"' if @training.t_type == assign_type.id  %>> <%= assign_type.title  %></option>
+          <% end %>
+        </select>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :bonus_exp, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :bonus_exp, class: 'number_field input-medium', id: 'bonus-exp' %>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label :bonus_cutoff, class: 'control-label' %>
+      <div class='controls'>
+        <div class="datetimepicker future-only input-append date">
+          <%= f.text_field :bonus_cutoff,
+                           value: datetime_format(@training.bonus_cutoff),
+                           class: 'input-medium',
+                           id: 'bonus-cutoff-time'%>
+          <span class="add-on">
+          <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+        </span>
+        </div>
+      </div>
+    </div>
+    <div class="control-group">
+      <%= f.label "Publish?", class: 'control-label' %>
+      <div class="controls checkbox-text">
+        <%= f.check_box :publish %> Check to publish training
+      </div>
+    </div>
+    <div class="control-group">
+      <label>Topic</label>
+      <div class="controls">
+        <%= render partial: "tags/form_checkboxes",
+                   locals: { tag_groups: @course.tag_groups,
+                             uncats: @course.tags.uncategorized,
+                             exist_tags_hash: @asm_tags } %>
+      </div>
+    </div>
+    <!--for file uploads-->
+    <div id="uploaded_files_div"></div>
+    <div class="form-actions">
+      <%= f.submit nil, :class => 'btn btn-primary', id: "training-update" %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                  course_path(@course), :class => 'btn' %>
+    </div>
+    <%= render :partial => "layouts/html_editor" %>
+<% end %>
+<h3>Upload lesson materials</h3>
+<br/>
+
+<%= render partial: "layouts/file_uploader_complicated",
+           locals: { owner: @training } %>

@@ -1,0 +1,186 @@
+<% unless owner && owner.has_attribute?(:id) && owner.id%>
+   <% owner = nil %>
+<% end %>
+
+<%= form_for [owner, FileUpload.new], :html => { :multipart => true, :id => "fileupload"  } do |f| %>
+    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+    <div class="row fileupload-buttonbar">
+      <div class="span7">
+        <!-- The fileinput-button span is used to style the file input field as button -->
+        <span class="btn btn-success fileinput-button">
+          <i class="icon-plus icon-white"></i>
+          <span>Add files...</span>
+          <input id="file_upload_upload" type="file" name="files" multiple>
+        </span>
+        <button type="button" class="btn btn-danger delete">
+          <i class="icon-trash icon-white"></i>
+          <span>Delete Selected</span>
+        </button>
+      </div>
+      <div class="span5">
+        <!-- The global progress bar -->
+        <div class="progress progress-success progress-striped active fade">
+          <div class="bar" style="width:0%;"></div>
+        </div>
+      </div>
+    </div>
+    <!-- The loading indicator is shown during image processing -->
+    <div class="fileupload-loading"></div>
+    <!-- The table listing the files available for upload/download -->
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="fileupload-buttonbar"><input type="checkbox" class="toggle"></th>
+          <th>Name</th>
+          <th>Size</th>
+          <th>Uploaded At</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
+    </table>
+<% end %>
+
+<script>
+    var fileUploadErrors = {
+        maxFileSize: 'File is too big',
+        minFileSize: 'File is too small',
+        acceptFileTypes: 'Filetype not allowed',
+        maxNumberOfFiles: 'Max number of files exceeded',
+        uploadedBytes: 'Uploaded bytes exceed file size',
+        emptyResult: 'Empty file upload result'
+    };
+</script>
+
+<!-- The template to display files available for upload -->
+<script id="template-upload-complicated" type="text/x-tmpl">
+  {% for (var i=0, file; file=o.files[i]; i++) { %}
+  <tr class="template-upload fade">
+    <td></td>
+    <td class="name"><span>{%=file.name%}</span></td>
+    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+    {% if (file.error) { %}
+    <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+    {% } else if (o.files.valid && !i) { %}
+    <td {% if (o.options.autoUpload) { %}colspan="2"{% } %}>
+      <div class="progress progress-success progress-striped active"><div class="bar" style="width:0%;"></div></div>
+    </td>
+    {% if (!o.options.autoUpload) { %}
+    <td class="start">
+      <button class="btn btn-primary">
+        <i class="icon-upload icon-white"></i>
+        <span>{%=locale.fileupload.start%}</span>
+      </button>
+    </td>
+    {% } %}
+    {% } else { %}
+    <td colspan="2"></td>
+    {% } %}
+    <td class="cancel">{% if (!i) { %}
+      <button class="btn btn-warning">
+        <i class="icon-ban-circle icon-white"></i>
+        <span>{%=locale.fileupload.cancel%}</span>
+      </button>
+      {% } %}</td>
+  </tr>
+  {% } %}
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download-complicated" type="text/x-tmpl">
+  {% for (var i=0, file; file=o.files[i]; i++) { %}
+  <tr class="template-download fade">
+    {% if (file.error) { %}
+    <td></td>
+    <td class="name"><span>{%=file.name%}</span></td>
+    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+    <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+    {% } else { %}
+    <td class="delete">
+      <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}" style="display: none;"></button>
+      <input type="checkbox" name="delete" value="1">
+    </td>
+    <td class="name">
+      <input type="hidden" name="files[{%=file.name%}]" class="uploaded-files" value="{%=file.id%}">
+      <a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&'gallery'%}" download="{%=file.name%}">{% if (file.original) { %}{%=file.original%}{% } else { %}{%=file.name%}{% } %}</a>
+    </td>
+    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+    <td class="timestamp" colspan="2"><span>{%= file.timestamp %}</span></td>
+    {% } %}
+    <td class="delete">
+      <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
+        <i class="icon-trash icon-white"></i>
+      </button>
+    </td>
+  </tr>
+  {% } %}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+$(function () {
+    // Initialize the jQuery File Upload widget:
+    $('#fileupload').fileupload({
+        maxFileSize: 50000000,
+        autoUpload: true,
+        uploadTemplateId: 'template-upload-complicated',
+        downloadTemplateId: 'template-download-complicated',
+        formData: [
+            {
+                name: '_mode',
+                value: 'MUL'
+            }]
+    });
+
+    var uploaded_files = []
+    $('#fileupload').bind('fileuploaddone', function (e, data) {
+      // Log the current bitrate for this upload:
+      var that = $(this).data('blueimp-fileupload') ||
+              $(this).data('fileupload'),
+          file = that._getFilesFromResponse(data)[0];
+      $("#uploaded_files_div").append('<input type="hidden" name="files['+ file.name + ']" value="'+file.id+'">');
+      uploaded_files.push(file.original);
+    });
+
+    // Register our handler for deleting items so deleted IDs won't be sent
+    // to the server.
+    $('#fileupload').on('click', 'td.delete .btn-danger', undefined, function() {
+      var $row = $(this).parents('tr.template-download')
+      var input = $('input.uploaded-files', $row)[0];
+
+      // Match the input with the same name as the file we are deleting.
+      $('#uploaded_files_div input[name=\'' + input.name.replace(/(\[|\])/g, "\\$&") + '\']').remove();
+    });
+
+    // Prevent files with the same filename from being uploaded twice in the
+    // same session.
+    $('#fileupload').on('fileuploadadd', function(e,data) {
+      var current_files = [];
+      $(this).fileupload('option').filesContainer.children().each(function() {
+        var data = $(this).data('data');
+        if (data) {
+          current_files.push(data.files[0].name);
+        }
+      });
+
+      data.files = $.map(data.files, function(file, i) {
+        if ($.inArray(file.name, uploaded_files) >= 0 || $.inArray(file.name, current_files) >= 0) {
+          return null;
+        } else {
+          return file;
+        }
+      });
+    });
+
+    // Load existing files:
+    $.getJSON($('#fileupload').prop('action'), function (files) {
+        var fu = $('#fileupload').data('blueimpFileupload');
+        fu._adjustMaxNumberOfFiles(-files.length);
+        var template = fu._renderDownload(files)
+                .appendTo($('#fileupload .files'));
+        // Force reflow:
+        fu._reflow = fu._transition && template.length &&
+                template[0].offsetWidth;
+        template.addClass('in');
+        $('#loading').remove();
+    });
+});
+</script>

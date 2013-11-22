@@ -1,0 +1,31 @@
+<% if @users %>
+    <table class="table assignments">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th width="32%">Role <span style="font-weight: normal">(click to edit)</span></th>
+      </tr>
+      </thead>
+
+      <tbody class="table-hover">
+      <% @users.each do |user| %>
+          <tr>
+            <td>
+              <%= user.name %>
+            </td>
+            <td>
+              <%= user.email %>
+            </td>
+            <td width="32%">
+              <%= best_in_place user, :system_role_id, type: :select, collection:Role.all.collect {|r| [ r.id,r.title ]} %>
+            </td>
+            <td>
+              <%= link_to 'Masquerade', new_user_masquerade_path(user), class: "btn" %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <%= paginate @users %>
+<% end %>

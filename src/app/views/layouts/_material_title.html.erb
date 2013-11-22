@@ -1,0 +1,7 @@
+<h4>
+  <% if @is_new[material.id] %>
+    <input type="hidden" class="new_<%= material.class.model_name.human.pluralize %>" />
+    <span class="label label-warning">New</span>
+  <% end %>
+  <i class="icon-file"></i> <%= material.filename %>
+</h4>

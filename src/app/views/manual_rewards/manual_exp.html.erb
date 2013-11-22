@@ -1,0 +1,47 @@
+<div class="page-header">
+  <h1>Awarding EXPs</h1>
+</div>
+
+<ul class="nav nav-tabs">
+  <li class="active">
+    <a href='<%= course_manual_exp_path(@course) %>'>Giving EXP</a>
+  </li>
+  <li>
+    <a href='<%= course_manual_achievement_path(@course) %>'>Giving Achievements</a>
+  </li>
+  <li>
+    <a href="<%= course_remove_achievement_path(@course) %>">Take Away Achievements</a>
+  </li>
+</ul>
+
+<%= form_tag course_manual_exp_path(@course), method: "POST" do %>
+  <h3>Giving EXP</h3>
+  <div>
+    <a href='?all_students'>View all students</a>
+    | <a href='?'>View my students</a>
+  </div>
+  <br/>
+  <table class="indent1">
+    <% @student_courses.each_with_index do |std_course, index| %>
+      <tr>
+        <td><%= render partial: "layouts/user_thumb_profile",
+          locals: { user_course: std_course } %>
+        </td>
+        <td>
+          <input type="number" name="exps[<%= std_course.id %>]" class="input-mini exp-input">
+          <% if index == 0 %>
+            <a class="repeat-exp-link" href="#"><small>Copy EXP number</small></a>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+  <h3>Reason:</h3>
+  <br/>
+  <div class="indent1"><textarea name="reason" class="span6" rows="5"></textarea></div>
+  <div class="form-actions">
+    <input type="submit" class="btn btn-large btn-primary" value="Give EXP" data-disable-with="Processing...">
+  </div>
+<% end %>
+

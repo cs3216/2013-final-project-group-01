@@ -1,0 +1,56 @@
+<div class="page-header">
+  <h1>Duplicate Data</h1>
+</div>
+
+<h2>Duplicate this course to a new course</h2>
+<br/>
+<p class="well">This action will clone the whole course, including: missions, training, levels,
+achievements, and tags. The requirement of achievements, or the tags of the assignments are preserved as well.
+</p>
+
+<div class="center">
+  <%= link_to "Duplicate Course", course_duplicate_course_path(@course),
+    class: "btn btn-large btn-primary center" %>
+</div>
+
+<hr/>
+
+<h2>Duplicate individual data</h2>
+<br/>
+<p class="well">Duplicating the data, the links are not preserved. For example: achievements will not have requirement.
+Assignments will not be tagged, etc.</p>
+
+<form action="<%= course_duplicate_assignments_path(@course) %>" action="POST">
+  <h3>Select target course:</h3><span>Data will be copied to the course: </span>
+  <select name="dest_course">
+    <% @my_courses.each do |c| %>
+      <option value="<%= c.id %>"><%= c.title %></option>
+    <% end %>
+  </select>
+  <br/>
+
+  <h3>Duplicate following data:</h3>
+  <br/>
+  <h3>Mission:</h3>
+  <ul>
+    <% @missions.each_with_index do |asm, i| %>
+      <li>
+        <input type="checkbox" name="missions[]" value="<%= asm.id %>" />
+        <span><%= asm.title %></span>
+      </li>
+    <% end %>
+  </ul>
+
+  <h3>Training:</h3>
+  <ul>
+    <% @trainings.each_with_index do |asm, i| %>
+      <li>
+        <input type="checkbox" name="trainings[]" value="<%= asm.id %>" />
+        <span><%= asm.title %></span>
+      </li>
+    <% end %>
+  </ul>
+  <div class="center">
+    <button class="btn btn-large btn-primary">Duplicate selected</button>
+  </div>
+</form>

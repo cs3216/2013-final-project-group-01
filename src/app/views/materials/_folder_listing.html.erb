@@ -1,0 +1,30 @@
+<table class="table assignments materials-list-table">
+  <thead>
+    <tr>
+      <th style="width: 1%">
+        <input type="checkbox" id="materials-select-all-files" >
+      </th>
+      <th>Name</th>
+      <th style="width: 25%">Modified</th>
+      <th style="width: 19%">&nbsp;</th>
+    </tr>
+  </thead>
+
+  <tbody class="table-hover">
+    <% (@subfolders.sort {|left, right|
+          if (left.is_virtual? != right.is_virtual?)
+            if left.is_virtual? then -1
+            else 1
+            end
+          else
+            Natcmp.natcmp left.name, right.name
+          end
+        }).each do |subfolder| %>
+    <%= render partial: "folder", :locals => { :subfolder => subfolder } %>
+    <% end %>
+
+    <% @files.sort {|left, right| Natcmp.natcmp left.filename, right.filename }.each do |material| %>
+    <%= render partial: "file", :locals => { :material => material } %>
+    <% end %>
+  </tbody>
+</table>

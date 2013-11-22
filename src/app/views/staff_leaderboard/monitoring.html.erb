@@ -1,0 +1,62 @@
+<ul class="nav nav-tabs">
+  <li class="<%= "active" if @tab == "Monitoring" %>">
+    <a href="<%= course_staff_monitoring_path(@course) %>" data-toggle="tab">Tutor Monitoring</a>
+  </li>
+  <li class="<%= "active" if @tab == "Summary" %>">
+    <a href="<%= course_staff_leaderboard_index_path(@course) %>" data-toggle="tab">Tutor Summary</a>
+  </li>
+</ul>
+<% if @tutor_details %>
+    <p><h4>View details for <%= @tutor_details[:tutor] %></h4>
+    <br>
+    <table class="table table-hover table-bordered">
+      <thead>
+      <tr>
+        <th>Mission Name</th>
+        <th>Student Name</th>
+        <th>Time taken to mark</th>
+        <th>Date Marked</th>
+        <!--<th>Update Count</th>-->
+      </tr>
+      </thead>
+      <tbody>
+      <% @tutor_details[:gradings].each do |grading| %>
+          <tr>
+            <% sbm = grading.sbm %>
+            <td><%=link_to sbm.mission.title, course_mission_submission_path(@course, sbm.mission, sbm) %></td>
+            <td><%= sbm.std_course.name %></td>
+            <td><%= distance_of_time(grading.created_at - sbm.submit_at) %></td>
+            <td><%= datetime_format grading.created_at %></td>
+            <!--<td></td>-->
+          </tr>
+      <% end %>
+
+      </tbody></table>
+
+<% end %>
+
+<table class="table table-hover table-center">
+  <thead>
+  <tr>
+    <th>No.</th>
+    <th style="text-align: left">Tutor Name</th>
+    <th># Marked</th>
+    <th># Students</th>
+    <th>Average Time Per Assignment</th>
+    <th>Stddev</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @tutors.each_with_index do |tutor, index| %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <% summary = @summaries[tutor.id] %>
+        <td style="text-align: left"><%= tutor.name %></td>
+        <td><a href="<%= course_staff_monitoring_path %>?_tutor_id=<%=tutor.id%>"><%= summary[:count] %> </a></td>
+        <td><%= summary[:std_count] %></td>
+        <td><%= distance_of_time(summary[:avg].to_i) if summary[:avg] != Float::INFINITY %></td>
+        <td><%= distance_of_time(summary[:std_dev].to_i) if summary[:std_dev] != Float::INFINITY %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,27 @@
+<div class="page-header">
+  <h1>Students</h1>
+</div>
+
+<div id="centre_container">
+  <div class="inner_box">
+    <table id="studentlist_table">
+      <% @student_courses.each_with_index do |student_course, i| %>
+          <% if i % 2 == 0 %>
+              <tr>
+          <% end %>
+          <td class="studentlist_box">
+            <%= render partial: "layouts/user_thumb_profile", locals: { user_course: student_course } %>
+          </td>
+          <% if i % 2 == 1 %>
+              </tr>
+          <% end %>
+      <% end %>
+      <% if @student_courses.size % 2 == 1 %>
+          <td></td></tr>
+      <% end %>
+    </table>
+    <% if @std_paging.display? %>
+        <%= paginate @student_courses %>
+    <% end %>
+  </div>
+</div>

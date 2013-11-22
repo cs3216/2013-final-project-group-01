@@ -1,0 +1,57 @@
+<div class="page-header">
+  <h1>Leaderboards</h1>
+</div>
+
+<div class="span4 leaderboard-table leaderboard-experience-table">
+  <table class="table">
+    <caption class="leaderboard-type">By Level</caption>
+    <% @top_exp.each_with_index do |std_course, index| %>
+      <tr>
+        <td class="leaderboard-counter-container"><p class="leaderboard-counter"></p></td>
+        <td class="user-profile-pic-col">
+          <a href="<%= course_user_course_path(@course, std_course) %>">
+            <img class="user-profile-pic" src="<%= std_course.user.get_profile_photo_url %>">
+          </a>
+        </td>
+        <td>
+          <a href="<%= course_user_course_path(@course, std_course) %>"
+            class="leaderboard-name"><%= std_course.name %>
+          </a>
+          <br/>
+          <span class="leaderboard-level"><%= std_course.level.get_title if std_course.level%></span><br/>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="span4 leaderboard-table leaderboard-achievement-table">
+  <table class="table">
+    <caption class="leaderboard-type">By Achievement</caption>
+    <% @top_ach.each_with_index do |std_course, index| %>
+      <!-- <tr class="<%= "leaderboard-top-row" if index == 0 %>"> -->
+      <tr>
+        <td class="leaderboard-counter"></td>
+        <td class="user-profile-pic-col">
+          <a href="<%= course_user_course_path(@course, std_course) %>">
+            <img class="user-profile-pic" src="<%= std_course.user.get_profile_photo_url %>">
+          </a>
+        </td>
+        <td>
+          <a href="<%= course_user_course_path(@course, std_course) %>"
+            class="leaderboard-name"><%= std_course.name %>
+          </a><br/>
+          <% std_course.leaderboard_achievements.each do |uach| %>
+            <a href='<%= course_achievement_path(@course, uach.achievement) %>'
+               rel="tooltip"
+               class="leaderboard-achivement"
+               title="<%= uach.achievement.title %>:
+               <%= uach.achievement.description %>">
+              <img class="asm-ach-icon" src="<%= uach.achievement.icon_url %>" >
+            </a>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>

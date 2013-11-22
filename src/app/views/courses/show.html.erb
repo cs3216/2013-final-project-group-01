@@ -1,0 +1,73 @@
+<% if !curr_user_course.id %>
+    <div class="page-header">
+      <h1><%= @course.title %></h1>
+      <% if current_user %>
+          <div class="pull-right">
+            <a href="<%= new_course_enroll_request_path(@course) %>" class="btn btn-primary">Request to Enroll</a>
+            <% if can? :manage, Course %>
+                <br/>
+                <br/>
+                <%= link_to new_course_enroll_request_path(@course, role: Role.shared.first.name),
+                            class:"btn btn-info" do %>
+                    Request to Observe</a>
+                <% end %>
+            <% end %>
+          </div>
+      <% end %>
+      <div class="media">
+        <a class="pull-left activity-icon" href="#">
+          <img class="media-object activity-icon"
+               src="<%= @course.creator.profile_photo_url %>" >
+        </a>
+        <div class="media-body">
+          <%= @course.creator.name %>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <p><%= @course.description %></p>
+<% end %>
+<% if @announcements and @announcements.first %>
+    <h2><%= @announcement_pref.prefer_value%></h2>
+    <div class="info-block">
+      <% @announcements.each do |announcement| %>
+          <div class="announcement">
+            <h4>
+              <% if @is_new.has_key?(announcement.id) %>
+                  <img class="asm-new-icon" src="http://c.dryicons.com/images/icon_sets/colorful_stickers_part_3_icons_set/png/48x48/promotion_new.png">
+              <% end %>
+              <%= announcement.title %>
+            </h4>
+            <%= render partial: "announcements/announcement", locals: { announcement:announcement } %>
+          </div>
+      <% end %>
+    </div>
+<% end %>
+
+<% if @activities and @activities.first %>
+    <h2><%= @activities_pref.prefer_value%></h2>
+    <hr>
+    <table class="activities">
+      <% @activities.each do |act| %>
+          <% unless act.actor_course.nil? || act.actor_course.is_phantom? || act.actor_course.is_staff? %>
+              <tr>
+                <td width="25px">
+                  <a class="pull-left activity-icon" href="<%= course_user_course_path(@course, act.actor_course) %>">
+                    <img class="media-object"
+                         src="<%= act.actor_course.user.get_profile_photo_url %>">
+                  </a>
+                </td>
+                <td>
+                  <a href="<%= course_user_course_path(@course, act.actor_course) %>">
+                    <%= act.actor_course.name %>
+                  </a> <%= act.action.text %>
+                  <strong><%= act.obj.get_title %></strong>
+                  <br/>
+                  <span class="time-small"><%= time_ago_in_words(act.created_at) %> ago</span>
+                  </div>
+                </td>
+              </tr>
+          <% end %>
+      <% end %>
+    </table>
+<% end %>

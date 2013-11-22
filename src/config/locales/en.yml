@@ -1,0 +1,39 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  helpers:
+    links:
+      new_mcq:  "New MCQ Question"
+      new_cq:   "New Coding Question"
+      new_mrq:  "New MRQ Question"
+      new_qn:   "New Question"
+
+  # overriding Forem locales
+  forem:
+    post:
+      buttons:
+        edit: "Save"
+    topic:
+      links:
+        edit: "Edit/Move"
+      received_new_topic: New topic posted in forum
+      received_new_post: New post in forum
+    topics:
+      show:
+        links:
+          edit: Edit
+        hide:
+          'true': Show
+          'false': Hide
+        lock:
+          'true': Unlock
+          'false': Lock
+        pin:
+          'true': Unpin
+          'false': Pin
+  materials:
+    subfolder_items:
+      zero: "empty"
+      one: "1 item"
+      other: "%{count} items"

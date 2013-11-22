@@ -1,0 +1,43 @@
+<div class="page-header">
+  <h1><%=t '.title', :default => "Level Design"%></h1>
+</div>
+
+<% if @levels.size <= 1 && (can? :manage, Level) %>
+  <%= form_tag course_levels_populate_path(@course), method: "POST" do %>
+    <h2>Number of level:
+      <input name="num_level" />
+      <button type="submit" class="btn btn-primary">Create levels</button>
+    </h2>
+  <% end %>
+<% else %>
+  <h2>Number of level: <%= @levels.size %></h2>
+
+  <%= form_tag(course_levels_mass_update_path(@course)) do %>
+    <table class="table" id="exp-table">
+      <thead>
+        <tr>
+          <th width="80px">Level</th>
+          <th>EXP required</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @levels.each do |lvl| %>
+          <% if lvl.level > 0 %>
+            <tr>
+              <td><%= lvl.level %></td>
+              <td><input type="number" maxlength="15" name="exps[]" value="<%= lvl.exp_threshold %>"></td>
+            </tr>
+          <% end %>
+        <% end %>
+        <tr>
+          <td><a href="#" class="lvl-add-more">Add more</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="form-actions" width="340px">
+      <button class="btn btn-primary">Update</button>
+    </div>
+  <% end %>
+
+<% end %>

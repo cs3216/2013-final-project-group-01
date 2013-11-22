@@ -1,0 +1,83 @@
+<div class="page-header">
+  <h1>Course Statistics</h1>
+</div>
+<h3>Assignment</h3>
+<p>View detail statistics of each assignment:</p>
+<table class="table-basic">
+  <tr>
+    <td>Mission</td>
+    <td>
+      <select id="select-mission">
+        <%= @missions.each do |asm| %>
+            <option value="<%= course_stats_mission_path(@course, asm) %>"><%= asm.title %></option>
+        <% end %>
+      </select>
+    </td>
+    <td><a href="#" class="btn btn-select-nav" data-target="#select-mission">View</a></td>
+  </tr>
+  <tr>
+    <td>Training</td>
+    <td>
+      <select id="select-training">
+        <%= @trainings.each do |asm| %>
+            <option value="<%= course_stats_training_path(@course, asm) %>"><%= asm.title %></option>
+        <% end %>
+      </select>
+    </td>
+    <td><a href="#" class="btn btn-select-nav" data-target="#select-training">View</a></td>
+  </tr>
+</table>
+<br/>
+<h3>Level</h3>
+
+<table class="table">
+  <tr>
+    <th width="10%"></th>
+    <th width="10%">Count</th>
+    <th>Students</th>
+  </tr>
+  <% @levels.each do |lvl| %>
+      <% lvl_stds = lvl.user_courses.student.where(is_phantom:false) %>
+      <% if lvl_stds.size > 0 %>
+          <tr>
+            <td><%= lvl.get_title %></td>
+            <td><%= lvl_stds.size %></td>
+            <td>
+              <% lvl_stds.each do |sc| %>
+                  <%= render partial: "user_courses/short_name_display",
+                             locals: { user_course: sc } %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+  <% end %>
+</table>
+
+<br/>
+<h3>Achievement</h3>
+<table class="table">
+  <tr>
+    <th width="10%"></th>
+    <th width="20%">Title</th>
+    <th width="10%">Count</th>
+    <th>Students</th>
+  </tr>
+  <% @achievements.each do |ach| %>
+      <% std_ucs = ach.user_courses.student.where(is_phantom: false) %>
+      <% if std_ucs.size > 0 %>
+          <tr>
+            <td><img src="<%= ach.icon_url %>" /></td>
+            <td><%= ach.title %></td>
+            <td><%= std_ucs.size %></td>
+            <td>
+              <% std_ucs.each do |uach| %>
+                  <%= render partial: "user_courses/short_name_display",
+                             locals: { user_course: uach } %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+  <% end %>
+</table>
+<!-- A graph to show statistical exp -->
+
