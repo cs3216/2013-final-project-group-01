@@ -22,7 +22,7 @@ Our project focused on adding three components to Coursemology to make up for th
 ## Deployment and Demo
 The applicaiton is deployed at the following locations:
 
-* [Coursemology.org](coursemology.org)
+* [Coursemology.org](http://coursemology.org)
 * [Demo Sandbox](http://coursemology.joelsplace.sg/) 
 	* Username: `jfdi@academy.com`
 	* password: `SuperSecretpaSS`
