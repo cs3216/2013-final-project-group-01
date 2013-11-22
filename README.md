@@ -2,6 +2,10 @@
 
 Group 1 - Coursemology
 
+## Commits and Source Code
+
+Hi CS3216 staff :) While the source code can be found in the `/src` folder, you can view our commit history at the [development repository](https://github.com/fuzzie360/coursemology.org/tree/forum-lessonbin). 
+
 ## Description
 
 Coursemology is an open source gamification platform which makes academic courses more fun and engaging, adding elements found in typical role-playing games to them. Students are given “Missions” instead of assignments, and are rewarded with experience points and achievements for completing them. In addition, participation in discussions with one another is incentivised through rewarding them with additional experience points for insightful or useful posts. Students can also see the progress (or “level”) of their peers, which further motivates them to keep up with their coursework.
@@ -22,7 +26,3 @@ The applicaiton is deployed at the following locations:
 * [Demo Sandbox](http://coursemology.joelsplace.sg/) 
 	* Username: `jfdi@academy.com`
 	* password: `SuperSecretpaSS`
-
-## Commits and Source Code
-
-While the source code can be found in the `/src` folder, you can view our commit history at the [development repository](https://github.com/fuzzie360/coursemology.org/tree/forum-lessonbin). 
